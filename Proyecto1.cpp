@@ -49,7 +49,7 @@ class Tablero{
         cout << endl;
     }
 
-    void borrarMatriz(int** matriz, int filas, int columnas){
+    void borrarTablero(int** matriz, int filas, int columnas){
 		for(int i = 0; i < filas; i++){
 				delete[]matriz[i];
 		}
