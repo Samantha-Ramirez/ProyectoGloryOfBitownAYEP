@@ -1,6 +1,9 @@
 #include <iostream>
+#include <stdlib.h>
+#include <math.h>
+#include <cmath>
 using namespace std;
-
+/*
 class Tablero{
     int filas;
     int columnas;
@@ -56,23 +59,38 @@ class Tablero{
 		delete[]matriz;
     }
 };
-
+*/
 
 int main(){
-    int V; //Vitalidad del Aventurero
-    string T; //Tipo de Aventurero
-    int M; //Cantidad de Mazmorras
-
-    /*por cada mazmorra
-    int L; // Largo mazmorra
-    int A; // Ancho mazmorra
-    cin >> L;
-    cin >> A;
-    */
-
-    cin >> V; 
-    cin >> T;
-    cin >> M;
-
+    string V = "";    //Vitalidad del Aventurero
+    string T = ""; //Tipo de Aventurero
+    string M = "";    //Cantidad de Mazmorras
+    //L A = Largo y Ancho de la Mazmorra respectivamente  
+    
+    string linea;
+    string tableroString = "35$LU$1";
+    int sizeOfTableroString = 7;
+    while(getline(cin, linea)) {
+        tableroString += linea;
+        tableroString += "$";
+        //cout << linea << endl;
+    }
+    int i = 0;
+    for(; i < sizeOfTableroString; i++){
+        if(tableroString[i] == '$')
+            break;
+        V += tableroString[i];
+    }
+    for(i = i+1; i < sizeOfTableroString; i++){
+        if(tableroString[i] == '$')
+            break;
+        T += tableroString[i];
+    }
+    for(i = i+1; i < sizeOfTableroString; i++){
+        if(tableroString[i] == '$')
+            break;
+        M += tableroString[i];
+    }
+    
     return 0;
 }
