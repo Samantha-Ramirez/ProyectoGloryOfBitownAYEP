@@ -6,9 +6,8 @@
 using namespace std;
 
 /*TO DO
-- TIPO DE DATO MAZMORRA
-- OBTENER A, L
-- POR QUE CARACTERES RAROS EN PRIMERO 
+- TIPO DE DATO MAZMORRA string || clase x
+- CARACTERES RAROS EN EL PRINCIPIO DEL TXT
 - RECORRIDO COMPLETO DE MAZMORRA
 */
 
@@ -26,49 +25,57 @@ string arquero = "AR";
 string luchador = "LU";
 
 //METODOS MAZMORRA
-string** createMazmorra(int row, int col){
-    string** maz = new string*[row];
-    for(int i = 0; i < row; i++){
+class Mazmorra{
+    public:
+    int row;
+    int col;
+    string** mazmorra;
+
+    Mazmorra(int L, int A){
+        this -> row = L;
+        this -> col = A;
+    }
+    string** createMazmorra(){
+        string** maz = new string*[row];
+        for(int i = 0; i < row; i++){
             maz[i] = new string[col];
+        }
+        
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                maz[i][j] = "";
+            }
+        }
+        
+        return maz;
     }
-    
-    for(int i = 0; i < row; i++){
-        for(int j = 0; j < col; j++){
-            maz[i][j] = "";
+    void initMazmorra(string line, int i){
+        int x = 0;
+        int j = 0;
+        for(int j = 0; j < line.size(); j++){
+            if(line[j] != ' '){
+                mazmorra[i][x] += line[j];
+            }else{
+                x++;
+            }
         }
     }
-    
-    return maz;
-}
-
-void initMazmorra(string** mazmorra, string line, int i){
-    int x = 0;
-    int j = 0;
-    for(int j = 0; j < line.size(); j++){
-        if(line[j] != ' '){
-            mazmorra[i][x] += line[j];
-        }else{
-            x++;
+    void printMazmorra(){
+        cout << endl;
+        for(int i = 0; i < row; i++) {
+            for(int j = 0; j < col; j++)
+                cout << " " << mazmorra[i][j];
+            cout << endl;
         }
-    }
-}
-
-void printMazmorra(string** mazmorra, int row, int col){
-    cout << endl;
-    for(int i = 0; i < row; i++) {
-        for(int j = 0; j < col; j++)
-            cout << " " << mazmorra[i][j];
         cout << endl;
     }
-    cout << endl;
-}
-
-void deleteMazmorra(string** mazmorra, int row, int col){
-    for(int i = 0; i < row; i++){
-        delete[]mazmorra[i];
+    void deleteMazmorra(){
+        for(int i = 0; i < row; i++){
+            delete[]mazmorra[i];
+        }
+        delete[]mazmorra;
     }
-    delete[]mazmorra;
-}
+};
 
 int cutStringNum(string line, int &index){
     string aux = "";
@@ -90,7 +97,9 @@ int main(){
     //Vitalidad del Aventurero
     int V = -1;
     getline(cin, line);
-    int index = 3;
+    int index = 3; 
+    /*Al principio del archivo salen caracteres raros, 
+    debo investigarlo pero por los momentos lo estoy cortando*/
     V = cutStringNum(line, index);
 
     //Tipo de Aventurero
@@ -109,22 +118,21 @@ int main(){
         int L = -1;
         int A = -1;
         getline(cin, line);
-        
         int index = 0;
         L = cutStringNum(line, index);
         A = cutStringNum(line, index);
+
+        //Mazmorra
+        Mazmorra mazmorra(L, A);
         
-        
-        string** mazmorra = createMazmorra(L, A);
-        printMazmorra(mazmorra, L, A);
+        mazmorra.mazmorra = mazmorra.createMazmorra();
         for(int i = 0; i < L; i++){
             getline(cin, line);
-            
-            initMazmorra(mazmorra, line, i);
+            mazmorra.initMazmorra(line, i);
         }
         
-        printMazmorra(mazmorra, L, A);
-        deleteMazmorra(mazmorra, L, A);
+        mazmorra.printMazmorra();
+        mazmorra.deleteMazmorra();
         
     }
     
