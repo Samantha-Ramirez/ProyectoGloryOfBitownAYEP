@@ -31,23 +31,23 @@ string** createMazmorra(int row, int col){
     for(int i = 0; i < row; i++){
             maz[i] = new string[col];
     }
-    /*
+    
     for(int i = 0; i < row; i++){
         for(int j = 0; j < col; j++){
-            maz[i][j] = ".";
+            maz[i][j] = "";
         }
     }
-    */
+    
     return maz;
 }
 
 void initMazmorra(string** mazmorra, string line, int i){
     int x = 0;
+    int j = 0;
     for(int j = 0; j < line.size(); j++){
         if(line[j] != ' '){
-            cout << line[j];
-            cout << mazmorra[i][x];
-            mazmorra[i][x] = line[j];
+            mazmorra[i][x] += line[j];
+        }else{
             x++;
         }
     }
@@ -70,7 +70,7 @@ void deleteMazmorra(string** mazmorra, int row, int col){
     delete[]mazmorra;
 }
 
-int cutString(string line, int &index){
+int cutStringNum(string line, int &index){
     string aux = "";
     for(int i = index; i < line.size(); i++){
         if(line[i] == ' ')
@@ -91,7 +91,7 @@ int main(){
     int V = -1;
     getline(cin, line);
     int index = 3;
-    V = cutString(line, index);
+    V = cutStringNum(line, index);
 
     //Tipo de Aventurero
     string T = "";
@@ -111,8 +111,8 @@ int main(){
         getline(cin, line);
         
         int index = 0;
-        L = cutString(line, index);
-        A = cutString(line, index);
+        L = cutStringNum(line, index);
+        A = cutStringNum(line, index);
         
         
         string** mazmorra = createMazmorra(L, A);
