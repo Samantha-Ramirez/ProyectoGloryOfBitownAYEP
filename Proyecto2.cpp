@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <cmath>
-#include <string> //stoi
 using namespace std;
 
 //DECLARACION PROVISIONAL DE VALORES
@@ -115,8 +114,16 @@ class Mazmorra{
         return false;
     }
     bool stillMonsters(){
-        //
-        return true;
+        bool isThereMonsters = false;
+        for(int i = 0; i < row; i++) {
+            for(int j = 0; j < col; j++){
+                if(isMonster(mazmorra[i][j])){
+                    isThereMonsters = true;
+                    return isThereMonsters;
+                }
+            }
+        }
+        return isThereMonsters;
     }
     bool isValid(int i, int j, int index){
         i = i + posibilitiesI[index];
