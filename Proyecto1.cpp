@@ -396,8 +396,8 @@ class Mazmorra{
     }
 
     void displace(int &i, int &j, int index){
-        i = posibilitiesI[index] - i;
-        j = posibilitiesJ[index] - j;
+        i = i - posibilitiesI[index];
+        j = j - posibilitiesJ[index];
     }
 
     bool isSolution(int i, int j){
@@ -456,7 +456,9 @@ int main(){
 
     //Vitalidad del Aventurero
     getline(cin, line);
-    int V = stoi(line);
+    int index = 3;
+    cout << line;
+    int V = cutStringNum(line, index);
 
     //Tipo de Aventurero
     getline(cin, line);

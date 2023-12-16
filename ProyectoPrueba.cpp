@@ -213,10 +213,13 @@ int posibilitiesI[] = {1, 0, 0, -1};
 int posibilitiesJ[] = {0, 1, -1, 0};
 int sizePosibilities = sizeof(posibilitiesI)/sizeof(int);
 int vidaAux = -1;
-string aux[5][5] = {{".", ".", ".", "*", "*"},
-                    {".", "G25", ".", ".", "."},
-                    {"PE", "*", "*", "*", "PS"},
-                    {"*", "*", "*", "*", "*"},
+
+string aux[7][5] = {{"*", "*", "*", "*", "*"},
+                    {"*", ".", ".", ".", "*"},
+                    {"PE", ".", "*", ".", "*"},
+                    {"*", "S5", "*", ".", "*"},
+                    {"*", ".", ".", "O12", "*"},
+                    {"*", ".", "*", ".", "PS"},
                     {"*", "*", "*", "*", "*"}};
 
 class Mazmorra{
@@ -227,7 +230,7 @@ class Mazmorra{
     int jPE; //j portal de entrada
     int iPS; //i portal de salida
     int jPS; //j portal de salida
-    string mazmorra[5][5]; //mazmorra
+    string mazmorra[7][5]; //mazmorra
     outputsMazmorra output; //resultado del recorrido
     Entity adventure; //aventurero
     
@@ -240,7 +243,7 @@ class Mazmorra{
         this -> adventure.vitality = V;
         this -> iPE = 2;
         this -> jPE = 0;
-        this -> iPS = 2;
+        this -> iPS = 5;
         this -> jPS = 4;
         for(int i = 0; i < row; i++){
             for(int j = 0; j < col; j++){
@@ -386,8 +389,8 @@ class Mazmorra{
     }
 
     void displace(int &i, int &j, int index){
-        i = posibilitiesI[index] - i;
-        j = posibilitiesJ[index] - j;
+        i = i - posibilitiesI[index];
+        j = j - posibilitiesJ[index];
     }
 
     bool isSolution(int i, int j){
@@ -417,6 +420,7 @@ class Mazmorra{
 
                     //procesar
                     place(iIndex, jIndex, i);
+                    cout << "Index antes" << iIndex << ", " << jIndex << endl;
 
                     //backup
                     string auxPosition = mazmorra[iIndex][jIndex];
@@ -434,6 +438,7 @@ class Mazmorra{
                     cout << "Vida despues" << adventure.vitality << endl;
                     mazmorra[iIndex][jIndex] = auxPosition;
                     displace(iIndex, jIndex, i);
+                    cout << "Index despues" << iIndex << ", " << jIndex << endl;
 
                     //log
                     printMazmorra();
@@ -448,8 +453,9 @@ class Mazmorra{
 int main(){
     int V = 35;
     string T = "LU";
-    int L = 5;
+    int L = 7;
     int A = 5;
+
     Mazmorra mazmorra(V, T, L, A);
     
     //BACKTRACKING
