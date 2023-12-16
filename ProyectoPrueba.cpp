@@ -213,6 +213,11 @@ int posibilitiesI[] = {1, 0, 0, -1};
 int posibilitiesJ[] = {0, 1, -1, 0};
 int sizePosibilities = sizeof(posibilitiesI)/sizeof(int);
 int vidaAux = -1;
+string aux[5][5] = {{".", ".", ".", "*", "*"},
+                    {".", "G25", ".", ".", "."},
+                    {"PE", "*", "*", "*", "PS"},
+                    {"*", "*", "*", "*", "*"},
+                    {"*", "*", "*", "*", "*"}};
 
 class Mazmorra{
     public:
@@ -222,7 +227,7 @@ class Mazmorra{
     int jPE; //j portal de entrada
     int iPS; //i portal de salida
     int jPS; //j portal de salida
-    string** mazmorra; //mazmorra
+    string mazmorra[5][5]; //mazmorra
     outputsMazmorra output; //resultado del recorrido
     Entity adventure; //aventurero
     
@@ -233,23 +238,15 @@ class Mazmorra{
         this -> output = YOUDIE; //por default
         this -> adventure.type = getFirstPosition(T);
         this -> adventure.vitality = V;
-    }
-
-    string** createMazmorra(){
-        //crear
-        string** maz = new string*[row];
-        for(int i = 0; i < row; i++){
-            maz[i] = new string[col];
-        }
-        
-        //inicializar
+        this -> iPE = 2;
+        this -> jPE = 0;
+        this -> iPS = 2;
+        this -> jPS = 4;
         for(int i = 0; i < row; i++){
             for(int j = 0; j < col; j++){
-                maz[i][j] = "";
+                mazmorra[i][j] = aux[i][j];
             }
         }
-        
-        return maz;
     }
 
     void initMazmorra(string line, int i){
@@ -294,13 +291,6 @@ class Mazmorra{
         case YOUSURVIVE: cout << "YOU SURVIVE" << endl; break;
         case YOUDIE: cout << "YOU DIE" << endl; break;
         }
-    }
-
-    void deleteMazmorra(){
-        for(int i = 0; i < row; i++){
-            delete[]mazmorra[i];
-        }
-        delete[]mazmorra;
     }
 
     int typeOfMonster(string position){
@@ -431,6 +421,7 @@ class Mazmorra{
                     //backup
                     string auxPosition = mazmorra[iIndex][jIndex];
                     mazmorra[iIndex][jIndex] = casillaInvalida;
+                    cout << "Vida antes" << adventure.vitality << endl;
 
                     //log 
                     printMazmorra();
@@ -439,9 +430,13 @@ class Mazmorra{
                     wanderMazmorra(iIndex, jIndex);
 
                     //deshacer
-                    adventure.vitality = vidaAux;  
+                    adventure.vitality = vidaAux; 
+                    cout << "Vida despues" << adventure.vitality << endl;
                     mazmorra[iIndex][jIndex] = auxPosition;
                     displace(iIndex, jIndex, i);
+
+                    //log
+                    printMazmorra();
                     
                 }
             }
@@ -451,47 +446,17 @@ class Mazmorra{
 };
 
 int main(){
-    //GET DATOS DEL TXT
-    string line;
-
-    //Vitalidad del Aventurero
-    getline(cin, line);
-    int V = stoi(line);
-
-    //Tipo de Aventurero
-    getline(cin, line);
-    string T = line;
-
-    //Cantidad de Mazmorras 
-    getline(cin, line);
-    int M = stoi(line);
+    int V = 35;
+    string T = "LU";
+    int L = 5;
+    int A = 5;
+    Mazmorra mazmorra(V, T, L, A);
     
-    for(int i = 0; i < M; i++){
-        //Largo de Mazmorra
-        //Ancho de Mazmorra
-        getline(cin, line);
-        int index = 0;
-        int L = cutStringNum(line, index);
-        int A = cutStringNum(line, index);
+    //BACKTRACKING
+    mazmorra.wanderMazmorra(mazmorra.iPE, mazmorra.jPE);
 
-        //MAZMORRA
-        Mazmorra mazmorra(V, T, L, A);
-        mazmorra.mazmorra = mazmorra.createMazmorra();
-        for(int i = 0; i < L; i++){
-            getline(cin, line);
-            mazmorra.initMazmorra(line, i);
-        }
+    //SALIDA
+    mazmorra.printOutput(mazmorra.output);
 
-        //BACKTRACKING
-        mazmorra.wanderMazmorra(mazmorra.iPE, mazmorra.jPE);
-
-        //SALIDA
-        mazmorra.printOutput(mazmorra.output);
-
-        //ELIMINAR MAZMORRA
-        mazmorra.deleteMazmorra();
-        
-    }
-    
     return 0;
 }
