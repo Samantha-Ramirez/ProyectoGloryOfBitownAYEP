@@ -209,18 +209,18 @@ int start_combat(char hero_type, int hero_vitality ,string monster_string, bool 
 
 //MAZMORRA
 //Movimientos
-int posibilitiesI[] = {1, 0, 0, -1};
-int posibilitiesJ[] = {0, 1, -1, 0};
+int posibilitiesI[] = { -1, 1, 0, 0};
+int posibilitiesJ[] = {0, 0, 1, -1};
 int sizePosibilities = sizeof(posibilitiesI)/sizeof(int);
 int vidaAux = -1;
 
 string aux[7][5] = {{"*", "*", "*", "*", "*"},
-                    {"*", ".", ".", ".", "*"},
-                    {"PE", ".", "*", ".", "*"},
-                    {"*", "S5", "*", ".", "*"},
-                    {"*", ".", ".", "O12", "*"},
-                    {"*", ".", "*", ".", "PS"},
-                    {"*", "*", "*", "*", "*"}};
+                    {"*", "O20", ".", ".", "*"},
+                    {"*", ".", "*", "O20", "*"},
+                    {"PE", ".", "O20", ".", "*"},
+                    {"*", ".", "*", "*", "*"},
+                    {"*", ".", "*", "*", "*"},
+                    {"*", ".", ".", ".", "PS"}};
 
 class Mazmorra{
     public:
@@ -420,7 +420,6 @@ class Mazmorra{
 
                     //procesar
                     place(iIndex, jIndex, i);
-                    cout << "Index antes" << iIndex << ", " << jIndex << endl;
 
                     //backup
                     string auxPosition = mazmorra[iIndex][jIndex];
@@ -438,7 +437,6 @@ class Mazmorra{
                     cout << "Vida despues" << adventure.vitality << endl;
                     mazmorra[iIndex][jIndex] = auxPosition;
                     displace(iIndex, jIndex, i);
-                    cout << "Index despues" << iIndex << ", " << jIndex << endl;
 
                     //log
                     printMazmorra();
@@ -452,7 +450,7 @@ class Mazmorra{
 
 int main(){
     int V = 35;
-    string T = "LU";
+    string T = "AR";
     int L = 7;
     int A = 5;
 

@@ -48,6 +48,27 @@ int cutStringNum(string line, int &index){
     return stoi(aux);
 }
 
+bool isNumber(char pos){
+    char num[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    int sizeNum = 10;
+    for(int i = 0; i < sizeNum; i++){
+        if(pos == num[i]){
+            return true;
+        }
+    }
+    return false;
+}
+
+int getNumber(string line){
+    string num = "";
+    for(int i = 0; i < line.size(); i++){
+        if(isNumber(line[i])){
+            num += line[i];
+        }
+    }
+    return stoi(num);
+}
+
 class ability{
 public:
 	int dmg = -1; //Daño
@@ -245,22 +266,55 @@ class Mazmorra{
         //inicializar
         for(int i = 0; i < row; i++){
             for(int j = 0; j < col; j++){
-                maz[i][j] = "";
+                maz[i][j] = ".";
             }
         }
         
         return maz;
     }
 
-    void initMazmorra(string line, int i){
-        int x = 0;
-        int j = 0;
-        for(int j = 0; j < line.size(); j++){
+    int valuesMazmorra(string position){
+        string values[] = {casillaDefault, casillaInvalida, portalEntrada, portalSalida, arbol, pantano};
+        int valuesSize = 6;
+        string monsters[] = {monstruoSlime, monstruoOrco, monstruoGigante};
+        int monstersSize = 3;
+        //valor exacto
+        for(int i = 0; i < valuesSize; i++){
+            if(position == values[i]){
+                return 1;
+            }
+        }
+        //es un monstruo
+        for(int i = 0; i < monstersSize; i++){
+            if(position == monsters[i]){
+                return 0;
+            }
+        }
+        //inicio
+        for(int i = 0; i < valuesSize; i++){
+            if(position[0] == getFirstPosition(values[i])){
+                return 2;
+            }
+        }
+        return -1;
+    }
 
-            //ignorar espacio
+    void initMazmorra(string line, int i){
+        //Suprimir espacios
+        string newLine = "";
+        for(int j = 0; j < line.size(); j++){
             if(line[j] != ' '){
-                mazmorra[i][x] += line[j];
-                
+                newLine += line[j];
+            }
+        }
+
+        int x = 0;
+        string aux = "";
+        for(int j = 0; j < newLine.size(); j++){
+            aux += newLine[j];
+
+            if(valuesMazmorra(aux) == 1){
+                mazmorra[i][x] = aux;
                 //encontrar portal de entrada
                 if(mazmorra[i][x] == portalEntrada){
                     this -> iPE = i;
@@ -269,13 +323,22 @@ class Mazmorra{
                     this -> iPS = i;
                     this -> jPS = x;
                 }
-
-            }else{
-                //cambiar indice cuando hay espacio
+                aux = "";
+                x++;
+            }else if(valuesMazmorra(aux) == 0){
+                mazmorra[i][x] = aux;
+                
+                string num = "";
+                while(j+1 < newLine.size() && valuesMazmorra(num + newLine[j+1]) == -1){
+                    mazmorra[i][x] += newLine[j+1];
+                    num = "";
+                    j++;
+                }
+                aux = "";
                 x++;
             }
         }
-    }
+    } 
 
     void printMazmorra(){
         cout << endl;
@@ -442,10 +505,15 @@ class Mazmorra{
                     adventure.vitality = vidaAux;  
                     mazmorra[iIndex][jIndex] = auxPosition;
                     displace(iIndex, jIndex, i);
+
+                    //log
+                    printMazmorra();
+
                     
                 }
             }
-            restoreMonsters();//CAMBIAR DE LUGAR
+            restoreMonsters();
+            printMazmorra();
         }
     }
 };
@@ -456,9 +524,7 @@ int main(){
 
     //Vitalidad del Aventurero
     getline(cin, line);
-    int index = 3;
-    cout << line;
-    int V = cutStringNum(line, index);
+    int V = getNumber(line);
 
     //Tipo de Aventurero
     getline(cin, line);
