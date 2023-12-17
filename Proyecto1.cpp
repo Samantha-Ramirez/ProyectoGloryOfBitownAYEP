@@ -277,6 +277,12 @@ class Mazmorra{
         int valuesSize = 6;
         string monsters[] = {monstruoSlime, monstruoOrco, monstruoGigante};
         int monstersSize = 3;
+        //inicio
+        for(int i = 0; i < valuesSize; i++){
+            if(position[0] == getFirstPosition(values[i])){
+                return 2;
+            }
+        }
         //valor exacto
         for(int i = 0; i < valuesSize; i++){
             if(position == values[i]){
@@ -287,12 +293,6 @@ class Mazmorra{
         for(int i = 0; i < monstersSize; i++){
             if(position == monsters[i]){
                 return 0;
-            }
-        }
-        //inicio
-        for(int i = 0; i < valuesSize; i++){
-            if(position[0] == getFirstPosition(values[i])){
-                return 2;
             }
         }
         return -1;
@@ -312,6 +312,7 @@ class Mazmorra{
         for(int j = 0; j < newLine.size(); j++){
             aux += newLine[j];
 
+            //valor exacto
             if(valuesMazmorra(aux) == 1){
                 mazmorra[i][x] = aux;
                 //encontrar portal de entrada
@@ -324,9 +325,9 @@ class Mazmorra{
                 }
                 aux = "";
                 x++;
+            //es un monstruo
             }else if(valuesMazmorra(aux) == 0){
                 mazmorra[i][x] = aux;
-                
                 string num = "";
                 while(j+1 < newLine.size() && valuesMazmorra(num + newLine[j+1]) == -1){
                     mazmorra[i][x] += newLine[j+1];
@@ -376,7 +377,7 @@ class Mazmorra{
     }
 
     bool isMonster(string position){
-        if(typeOfMonster(position) != -1){
+        if(typeOfMonster(position) != -1 && typeOfMonster(position) != 3){
             return true;
         }
         return false;
@@ -386,7 +387,7 @@ class Mazmorra{
         bool isThereMonsters = false;
         for(int i = 0; i < row; i++) {
             for(int j = 0; j < col; j++){
-                if(isMonster(mazmorra[i][j])){
+                if(isMonster(mazmorra[i][j]) || typeOfMonster(mazmorra[i][j]) == 3){
                     isThereMonsters = true;
                     return isThereMonsters;
                 }
@@ -400,8 +401,9 @@ class Mazmorra{
             for(int j = 0; j < col; j++){
                 //RESIDUOS DE GIGANTE
                 if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(residuoMonstruo)){
+                    int sizePosition = mazmorra[i][j].size();
                     mazmorra[i][j] = "";
-                    for(int k = 1; k < mazmorra[i][j].size(); k++){
+                    for(int k = 1; k < sizePosition; k++){
                         mazmorra[i][j] += mazmorra[i][j][k];
                     }
                 //NO SUPERABLE
@@ -447,6 +449,7 @@ class Mazmorra{
                 //victoria -> menos vida y cambio en mazmorra
                 }else{
                     vitality = status;
+                    //si es un gigante
                     if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoGigante)){
                         mazmorra[i][j] = residuoMonstruo + mazmorra[i][j]; //Residuo de gigante
                     }

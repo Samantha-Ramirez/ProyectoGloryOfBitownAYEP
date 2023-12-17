@@ -306,7 +306,7 @@ class Mazmorra{
     }
 
     bool isMonster(string position){
-        if(typeOfMonster(position) != -1){
+        if(typeOfMonster(position) != -1 && typeOfMonster(position) != 3){
             return true;
         }
         return false;
@@ -316,7 +316,7 @@ class Mazmorra{
         bool isThereMonsters = false;
         for(int i = 0; i < row; i++) {
             for(int j = 0; j < col; j++){
-                if(isMonster(mazmorra[i][j])){
+                if(isMonster(mazmorra[i][j]) || typeOfMonster(mazmorra[i][j]) == 3){
                     isThereMonsters = true;
                     return isThereMonsters;
                 }
