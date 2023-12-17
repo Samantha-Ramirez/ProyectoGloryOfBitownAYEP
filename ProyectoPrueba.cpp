@@ -241,9 +241,9 @@ class Mazmorra{
         this -> output = YOUDIE; //por default
         this -> adventure.type = getFirstPosition(T);
         this -> adventure.vitality = V;
-        this -> iPE = 2;
+        this -> iPE = 3;
         this -> jPE = 0;
-        this -> iPS = 5;
+        this -> iPS = 6;
         this -> jPS = 4;
         for(int i = 0; i < row; i++){
             for(int j = 0; j < col; j++){
@@ -349,7 +349,7 @@ class Mazmorra{
         return false; 
     }
 
-    bool isValid(int i, int j, int index){
+    bool isValid(int i, int j, int index, int &vitality){
         i = i + posibilitiesI[index];
         j = j + posibilitiesJ[index];
         
@@ -358,7 +358,7 @@ class Mazmorra{
             //COMBATE
             if(isMonster(mazmorra[i][j])){
                 //Status despues de combate
-                int status = start_combat(adventure.type, adventure.vitality, mazmorra[i][j], true);
+                int status = start_combat(adventure.type, vitality, mazmorra[i][j], true);
 
                 //derrota -> no sigo
                 if(status == 0){
@@ -367,8 +367,7 @@ class Mazmorra{
 
                 //victoria -> menos vida y cambio en mazmorra
                 }else{
-                    vidaAux = adventure.vitality;
-                    adventure.vitality = status;
+                    vitality = status;
                     if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoGigante)){
                         mazmorra[i][j] = residuoMonstruo + getFirstPosition(monstruoGigante); //Residuo de gigante
                     }
@@ -416,7 +415,8 @@ class Mazmorra{
         }
         else if(output != YOUGETTHEGLORY && iIndex * jIndex < row * col){
             for(int i = 0; i < sizePosibilities; i++){
-                if(isValid(iIndex, jIndex, i)){
+                int auxVitality = adventure.vitality;
+                if(isValid(iIndex, jIndex, i, adventure.vitality)){
 
                     //procesar
                     place(iIndex, jIndex, i);
@@ -433,7 +433,7 @@ class Mazmorra{
                     wanderMazmorra(iIndex, jIndex);
 
                     //deshacer
-                    adventure.vitality = vidaAux; 
+                    adventure.vitality = auxVitality; 
                     cout << "Vida despues" << adventure.vitality << endl;
                     mazmorra[iIndex][jIndex] = auxPosition;
                     displace(iIndex, jIndex, i);

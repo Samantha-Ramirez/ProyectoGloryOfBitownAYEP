@@ -233,7 +233,6 @@ int start_combat(char hero_type, int hero_vitality ,string monster_string, bool 
 int posibilitiesI[] = {1, 0, 0, -1};
 int posibilitiesJ[] = {0, 1, -1, 0};
 int sizePosibilities = sizeof(posibilitiesI)/sizeof(int);
-int vidaAux = -1;
 
 class Mazmorra{
     public:
@@ -419,7 +418,7 @@ class Mazmorra{
         return false; 
     }
 
-    bool isValid(int i, int j, int index){
+    bool isValid(int i, int j, int index, int &vitality){
         i = i + posibilitiesI[index];
         j = j + posibilitiesJ[index];
         
@@ -428,7 +427,7 @@ class Mazmorra{
             //COMBATE
             if(isMonster(mazmorra[i][j])){
                 //Status despues de combate
-                int status = start_combat(adventure.type, adventure.vitality, mazmorra[i][j], true);
+                int status = start_combat(adventure.type, vitality, mazmorra[i][j], true);
 
                 //derrota -> no sigo
                 if(status == 0){
@@ -437,8 +436,7 @@ class Mazmorra{
 
                 //victoria -> menos vida y cambio en mazmorra
                 }else{
-                    vidaAux = adventure.vitality;
-                    adventure.vitality = status;
+                    vitality = status;
                     if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoGigante)){
                         mazmorra[i][j] = residuoMonstruo + getFirstPosition(monstruoGigante); //Residuo de gigante
                     }
@@ -486,7 +484,8 @@ class Mazmorra{
         }
         else if(output != YOUGETTHEGLORY && iIndex * jIndex < row * col){
             for(int i = 0; i < sizePosibilities; i++){
-                if(isValid(iIndex, jIndex, i)){
+                int auxVitality = adventure.vitality;
+                if(isValid(iIndex, jIndex, i, adventure.vitality)){
 
                     //procesar
                     place(iIndex, jIndex, i);
@@ -502,7 +501,7 @@ class Mazmorra{
                     wanderMazmorra(iIndex, jIndex);
 
                     //deshacer
-                    adventure.vitality = vidaAux;  
+                    adventure.vitality = auxVitality;  
                     mazmorra[iIndex][jIndex] = auxPosition;
                     displace(iIndex, jIndex, i);
 
