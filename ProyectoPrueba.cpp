@@ -212,15 +212,14 @@ int start_combat(char hero_type, int hero_vitality ,string monster_string, bool 
 int posibilitiesI[] = { -1, 1, 0, 0};
 int posibilitiesJ[] = {0, 0, 1, -1};
 int sizePosibilities = sizeof(posibilitiesI)/sizeof(int);
-int vidaAux = -1;
 
 string aux[7][5] = {{"*", "*", "*", "*", "*"},
+                    {"*", "*", "*", "*", "*"},
                     {"*", "O20", ".", ".", "*"},
-                    {"*", ".", "*", "O20", "*"},
-                    {"PE", ".", "O20", ".", "*"},
+                    {"PE", ".", ".", ".", "*"},
                     {"*", ".", "*", "*", "*"},
-                    {"*", ".", "*", "*", "*"},
-                    {"*", ".", ".", ".", "PS"}};
+                    {"*", ".", ".", ".", "."},
+                    {"*", "*", "*", "*", "PS"}};
 
 class Mazmorra{
     public:
@@ -298,6 +297,7 @@ class Mazmorra{
 
     int typeOfMonster(string position){
         switch(getFirstPosition(position)){
+        case 'M': return 3;
         case 'S': return 2;
         case 'O': return 1;
         case 'G': return 0;
@@ -328,10 +328,19 @@ class Mazmorra{
     void restoreMonsters(){
         for(int i = 0; i < row; i++) {
             for(int j = 0; j < col; j++){
+                //RESIDUOS DE GIGANTE
                 if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(residuoMonstruo)){
-                    mazmorra[i][j] = monstruoGigante;
+                    mazmorra[i][j] = "";
+                    for(int k = 1; k < mazmorra[i][j].size(); k++){
+                        mazmorra[i][j] += mazmorra[i][j][k];
+                    }
+                //NO SUPERABLE
                 }else if((getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoNoSuperable))){
-                    mazmorra[i][j] = mazmorra[i][j][1];
+                    int sizePosition = mazmorra[i][j].size();
+                    mazmorra[i][j] = "";
+                    for(int k = 1; k < sizePosition; k++){
+                        mazmorra[i][j] += mazmorra[i][j][k];
+                    }
                 }
             }
         }
@@ -362,14 +371,15 @@ class Mazmorra{
 
                 //derrota -> no sigo
                 if(status == 0){
-                    mazmorra[i][j] = monstruoNoSuperable + getFirstPosition(mazmorra[i][j]); //Marcado como no superable
+                    mazmorra[i][j] = monstruoNoSuperable + mazmorra[i][j]; //Marcado como no superable
+                    printMazmorra();
                     return false;
 
                 //victoria -> menos vida y cambio en mazmorra
                 }else{
                     vitality = status;
                     if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoGigante)){
-                        mazmorra[i][j] = residuoMonstruo + getFirstPosition(monstruoGigante); //Residuo de gigante
+                        mazmorra[i][j] = residuoMonstruo + mazmorra[i][j]; //Residuo de gigante
                     }
                 }
             }
@@ -449,7 +459,7 @@ class Mazmorra{
 };
 
 int main(){
-    int V = 35;
+    int V = 10;
     string T = "AR";
     int L = 7;
     int A = 5;

@@ -367,6 +367,7 @@ class Mazmorra{
 
     int typeOfMonster(string position){
         switch(getFirstPosition(position)){
+        case 'M': return 3;
         case 'S': return 2;
         case 'O': return 1;
         case 'G': return 0;
@@ -397,10 +398,19 @@ class Mazmorra{
     void restoreMonsters(){
         for(int i = 0; i < row; i++) {
             for(int j = 0; j < col; j++){
+                //RESIDUOS DE GIGANTE
                 if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(residuoMonstruo)){
-                    mazmorra[i][j] = monstruoGigante;
+                    mazmorra[i][j] = "";
+                    for(int k = 1; k < mazmorra[i][j].size(); k++){
+                        mazmorra[i][j] += mazmorra[i][j][k];
+                    }
+                //NO SUPERABLE
                 }else if((getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoNoSuperable))){
-                    mazmorra[i][j] = mazmorra[i][j][1];
+                    int sizePosition = mazmorra[i][j].size();
+                    mazmorra[i][j] = "";
+                    for(int k = 1; k < sizePosition; k++){
+                        mazmorra[i][j] += mazmorra[i][j][k];
+                    }
                 }
             }
         }
@@ -431,14 +441,15 @@ class Mazmorra{
 
                 //derrota -> no sigo
                 if(status == 0){
-                    mazmorra[i][j] = monstruoNoSuperable + getFirstPosition(mazmorra[i][j]); //Marcado como no superable
+                    mazmorra[i][j] = monstruoNoSuperable + mazmorra[i][j]; //Marcado como no superable
+                    printMazmorra();
                     return false;
 
                 //victoria -> menos vida y cambio en mazmorra
                 }else{
                     vitality = status;
                     if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoGigante)){
-                        mazmorra[i][j] = residuoMonstruo + getFirstPosition(monstruoGigante); //Residuo de gigante
+                        mazmorra[i][j] = residuoMonstruo + mazmorra[i][j]; //Residuo de gigante
                     }
                 }
             }
@@ -551,6 +562,7 @@ int main(){
 
         //BACKTRACKING
         mazmorra.wanderMazmorra(mazmorra.iPE, mazmorra.jPE);
+        mazmorra.printMazmorra();
 
         //SALIDA
         mazmorra.printOutput(mazmorra.output);
