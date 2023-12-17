@@ -437,12 +437,11 @@ class Mazmorra{
             //COMBATE
             if(isMonster(mazmorra[i][j])){
                 //Status despues de combate
-                int status = start_combat(adventure.type, vitality, mazmorra[i][j], true);
+                int status = start_combat(adventure.type, vitality, mazmorra[i][j], false);
 
                 //derrota -> no sigo
                 if(status == 0){
                     mazmorra[i][j] = monstruoNoSuperable + mazmorra[i][j]; //Marcado como no superable
-                    printMazmorra();
                     return false;
 
                 //victoria -> menos vida y cambio en mazmorra
@@ -506,7 +505,7 @@ class Mazmorra{
                     mazmorra[iIndex][jIndex] = casillaInvalida;
 
                     //log 
-                    printMazmorra();
+                    //printMazmorra();
 
                     //backtracking
                     wanderMazmorra(iIndex, jIndex);
@@ -517,13 +516,13 @@ class Mazmorra{
                     displace(iIndex, jIndex, i);
 
                     //log
-                    printMazmorra();
+                    //printMazmorra();
 
                     
                 }
             }
             restoreMonsters();
-            printMazmorra();
+            //printMazmorra();
         }
     }
 };
@@ -562,7 +561,6 @@ int main(){
 
         //BACKTRACKING
         mazmorra.wanderMazmorra(mazmorra.iPE, mazmorra.jPE);
-        mazmorra.printMazmorra();
 
         //SALIDA
         mazmorra.printOutput(mazmorra.output);

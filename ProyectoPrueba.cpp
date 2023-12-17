@@ -364,15 +364,16 @@ class Mazmorra{
         
         //Posicion dentro del tablero
         if(i >= 0 && i < row && j >= 0 && j < col){
+            cout << "Posicion valida " << mazmorra[i][j] << endl;
             //COMBATE
             if(isMonster(mazmorra[i][j])){
                 //Status despues de combate
-                int status = start_combat(adventure.type, vitality, mazmorra[i][j], true);
+                int status = start_combat(adventure.type, vitality, mazmorra[i][j], false);
 
                 //derrota -> no sigo
                 if(status == 0){
                     mazmorra[i][j] = monstruoNoSuperable + mazmorra[i][j]; //Marcado como no superable
-                    printMazmorra();
+                    //printMazmorra();
                     return false;
 
                 //victoria -> menos vida y cambio en mazmorra
