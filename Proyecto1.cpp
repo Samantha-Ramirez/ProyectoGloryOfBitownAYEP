@@ -107,7 +107,8 @@ public:
 	}
 };
 
-class Entity{
+//Clase Padre
+class Entity{ 
 public:
 	char type; //Tipo
 	int ability_num; //Numero de habilidad
@@ -143,6 +144,12 @@ public:
 
 		return damage_to_execute;
 	}
+    //RESET ABILITY
+    void reset_ability(){
+        for(int i = 0; i < ability_num; ++i){
+            (ptr_abs+i)-> used = -99;
+        }
+    }
 };
 
 //LUCHADOR
