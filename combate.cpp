@@ -169,7 +169,11 @@ int start_combat(char hero_type, int hero_vitality ,string monster_string, bool 
 
 int main(int argc, char const *argv[])
 {	
-	cout << start_combat('A', 10, "O20", true) << endl;
-    cout << start_combat('A', 10, "O20", true) << endl;
+	cout << "PRIMERO" << endl;
+	cout << start_combat('L', 12, "O20", true) << endl;
+	cout << "SEGUNDO" << endl;
+	cout << start_combat('L', 8, "O20", true) << endl;
+	cout << "TERCERO" << endl;
+	cout << start_combat('L', 4, "O20", true) << endl;
 	return 0;
 }

@@ -50,28 +50,49 @@ string stoiStr(int intg){
     return acumsDer;
 }
 
-int extract_num(string t){
-	string n_t = "";
-	for (int i = 1; i < t.size(); ++i){
-		n_t+= t[i];
-	}
-	return stoi(n_t);
-}
-
 char getFirstPosition(string position){
     return position[0];
 }
 
-string cutString(string line, int &index){
+string cutString(string line, int &index, char sep){
     string aux = "";
     for(int i = index; i < line.size(); i++){
-        if(line[i] == ' ')
+        if(line[i] == sep)
             break;
         aux += line[i];
         index++;
     }
     index++;
     return aux;
+}
+
+int extract_num(string t){
+	string n_t = "";
+	for (int i = 1; i < t.size(); ++i){
+		n_t+= t[i];
+	}
+	return stoiInt(n_t);
+}
+
+bool isNumber(char pos){
+    char num[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    int sizeNum = 10;
+    for(int i = 0; i < sizeNum; i++){
+        if(pos == num[i]){
+            return true;
+        }
+    }
+    return false;
+}
+
+int getNumber(string line){
+    string num = "";
+    for(int i = 0; i < line.size(); i++){
+        if(isNumber(line[i])){
+            num += line[i];
+        }
+    }
+    return stoiInt(num);
 }
 
 class ability{
@@ -86,7 +107,8 @@ public:
 	}
 };
 
-class Entity{
+//Clase Padre
+class Entity{ 
 public:
 	char type; //Tipo
 	int ability_num; //Numero de habilidad
@@ -122,6 +144,7 @@ public:
 
 		return damage_to_execute;
 	}
+    //RESET ABILITY
     void reset_ability(){
         for(int i = 0; i < ability_num; ++i){
             (ptr_abs+i)-> used = -99;
@@ -248,26 +271,6 @@ int start_combat(char hero_type, int hero_vitality ,string monster_string, bool 
 int posibilitiesI[] = {0, 0, -1, 1};
 int posibilitiesJ[] = {1, -1, 0, 0};
 int sizePosibilities = sizeof(posibilitiesI)/sizeof(int);
-string aux2[10][10] = {{"PE", "*", ".", ".", ".", ".", ".", ".", ".", "*"},
-                    {".", "*", ".", "*", "*", "*", "*", "*", ".", "*"},
-                    {".", "*", ".", "*", "S6", ".", ".", "*", ".", "*"},
-                    {".", "O15", ".", ".", ".", "*", ".", ".", ".", "*"},
-                    {"*", "*", "*", "*", "*", "*", "*", "*", "O20", "*"},
-                    {"*", "*", "*", "*", "*", "*", "*", "*", ".", "*"},
-                    {"*", ".", ".", ".", "O15", ".", "*", "*", ".", "."},
-                    {"*", ".", ".", ".", "S6", ".", ".", ".", ".", "."},
-                    {"*", "*", "*", "*", "*", "*", "*", "*", "*", "."},
-                    {"*", "*", "*", "*", "*", "*", "*", "*", "*", "PS"}};
-string aux[10][10] = {{"PE", "*", ".", ".", ".", ".", ".", ".", ".", "*"},
-                    {".", "*", ".", "*", "*", "*", "*", "*", ".", "*"},
-                    {".", "*", ".", "*", "S6", ".", ".", "*", ".", "*"},
-                    {".", ".", ".", ".", ".", "*", ".", ".", ".", "*"},
-                    {"*", "*", "*", "*", "*", "*", "*", "*", ".", "*"},
-                    {"*", "*", "*", "*", "*", "*", "*", "*", ".", "*"},
-                    {"*", ".", ".", ".", ".", "S6", "*", "*", ".", "."},
-                    {"*", ".", ".", ".", ".", ".", ".", ".", ".", "."},
-                    {"*", "*", "*", "*", "*", "*", "*", "*", "*", "."},
-                    {"*", "*", "*", "*", "*", "*", "*", "*", "*", "PS"}};
 
 class Mazmorra{
     public:
@@ -277,37 +280,80 @@ class Mazmorra{
     int jPE; //j portal de entrada
     int iPS; //i portal de salida
     int jPS; //j portal de salida
-    string mazmorra[10][10]; //mazmorra
+    string** mazmorra; //mazmorra
     outputsMazmorra output; //resultado del recorrido
     Entity adventure; //aventurero
+    string monsters = "";
+    string monstersFounded = "";
     
-
     Mazmorra(int V, string T, int L, int A){
         this -> row = L;
         this -> col = A;
         this -> output = YOUDIE; //por default
         this -> adventure.type = getFirstPosition(T);
         this -> adventure.vitality = V;
-        this -> iPE = 0;
-        this -> jPE = 0;
-        this -> iPS = 9;
-        this -> jPS = 9;
+    }
+
+    string** createMazmorra(){
+        //crear
+        string** maz = new string*[row];
+        for(int i = 0; i < row; i++){
+            maz[i] = new string[col];
+        }
+        
+        //inicializar
         for(int i = 0; i < row; i++){
             for(int j = 0; j < col; j++){
-                mazmorra[i][j] = aux[i][j];
+                maz[i][j] = "";
             }
         }
+        
+        return maz;
+    }
+
+    int valuesMazmorra(string position){
+        string values[] = {casillaDefault, casillaInvalida, portalEntrada, portalSalida, arbol, pantano};
+        int valuesSize = 6;
+        string monsters[] = {monstruoSlime, monstruoOrco, monstruoGigante};
+        int monstersSize = 3;
+        //valor exacto
+        for(int i = 0; i < valuesSize; i++){
+            if(position == values[i]){
+                return 0;
+            }
+        }
+        //es un monstruo
+        for(int i = 0; i < monstersSize; i++){
+            if(position == monsters[i]){
+                return 1;
+            }
+        }
+        //inicio
+        for(int i = 0; i < valuesSize; i++){
+            if(position[0] == getFirstPosition(values[i])){
+                return 2;
+            }
+        }
+        return -1;
     }
 
     void initMazmorra(string line, int i){
-        int x = 0;
-        int j = 0;
+        //Suprimir espacios
+        string newLine = "";
         for(int j = 0; j < line.size(); j++){
-
-            //ignorar espacio
             if(line[j] != ' '){
-                mazmorra[i][x] += line[j];
-                
+                newLine += line[j];
+            }
+        }
+        //cout << newLine << endl;
+        int x = 0;
+        string aux = "";
+        for(int j = 0; j < newLine.size(); j++){
+            aux += newLine[j];
+
+            //valor exacto
+            if(valuesMazmorra(aux) == 0){
+                mazmorra[i][x] = aux;
                 //encontrar portal de entrada
                 if(mazmorra[i][x] == portalEntrada){
                     this -> iPE = i;
@@ -316,13 +362,24 @@ class Mazmorra{
                     this -> iPS = i;
                     this -> jPS = x;
                 }
-
-            }else{
-                //cambiar indice cuando hay espacio
+                aux = "";
+                x++;
+            //es un monstruo
+            }else if(valuesMazmorra(aux) == 1){
+                mazmorra[i][x] = aux;
+                string num = "";
+                while(j+1 < newLine.size() && valuesMazmorra(num + newLine[j+1]) == -1){
+                    mazmorra[i][x] += newLine[j+1];
+                    num = "";
+                    j++;
+                }
+                //indice de monstruos
+                monsters += mazmorra[i][x] + "," + stoiStr(i) + "," + stoiStr(x) + " ";
+                aux = "";
                 x++;
             }
         }
-    }
+    } 
 
     void printMazmorra(){
         cout << endl;
@@ -343,9 +400,15 @@ class Mazmorra{
         }
     }
 
+    void deleteMazmorra(){
+        for(int i = 0; i < row; i++){
+            delete[]mazmorra[i];
+        }
+        delete[]mazmorra;
+    }
+
     int typeOfMonster(string position){
         switch(getFirstPosition(position)){
-        case 'M': return 3;
         case 'S': return 2;
         case 'O': return 1;
         case 'G': return 0;
@@ -354,45 +417,12 @@ class Mazmorra{
     }
 
     bool isMonster(string position){
-        if(typeOfMonster(position) != -1 && typeOfMonster(position) != 3){
+        if(typeOfMonster(position) != -1){
             return true;
         }
         return false;
     }
 
-    bool stillMonsters(){
-        bool isThereMonsters = false;
-        for(int i = 0; i < row; i++) {
-            for(int j = 0; j < col; j++){
-                if(isMonster(mazmorra[i][j]) || typeOfMonster(mazmorra[i][j]) == 3){
-                    isThereMonsters = true;
-                    return isThereMonsters;
-                }
-            }
-        }
-        return isThereMonsters;
-    }
-
-    void restoreMonsters(int iIndex, int jIndex){
-        for(int i = 0; i < row; i++) {
-            for(int j = 0; j < col; j++){
-                //RESIDUOS DE GIGANTE || NO SUPERABLE
-                if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(residuoMonstruo) 
-                || getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoNoSuperable)){
-                    
-                    int index = 1;
-                    string monster = cutString(mazmorra[i][j], index);
-                    int monsI = stoiInt(cutString(mazmorra[i][j], index));
-                    int monsJ = stoiInt(cutString(mazmorra[i][j], index));
-
-                    if(monsI == iIndex && monsJ == jIndex){
-                        mazmorra[i][j] = monster;
-                    }
-                }
-            }
-        }
-    }
-    
     bool isValidValue(string position){
         if((position == casillaDefault)
         || (position == arbol && adventure.type == getFirstPosition(arquero))
@@ -405,35 +435,47 @@ class Mazmorra{
         return false; 
     }
 
-    bool isValid(int i, int j, int index, int &vitality){
-        string iAux = stoiStr(i);
-        string jAux = stoiStr(j);
+    bool isMonsterRepeated(string monster){
+        for(int index = 0; index < monstersFounded.size();){
+            string monsterComp = cutString(monstersFounded, index, ' ');
+            if(monsterComp == monster){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool isValid(int i, int j, int index){
         i = i + posibilitiesI[index];
         j = j + posibilitiesJ[index];
         
         //Posicion dentro del tablero
         if(i >= 0 && i < row && j >= 0 && j < col){
-            //cout << "Posicion valida " << mazmorra[i][j] << endl;
-            //COMBATE
-            if(isMonster(mazmorra[i][j])){
-                //Status despues de combate
-                int status = start_combat(adventure.type, vitality, mazmorra[i][j], true);
 
-                //derrota -> no sigo
-                if(status == 0){
-                    mazmorra[i][j] = monstruoNoSuperable + mazmorra[i][j] + " " + iAux + " " + jAux; //Marcado como no superable
-                    //printMazmorra();
-                    return false;
+            //ES MONSTRUO
+            if(isMonster(mazmorra[i][j]) && !isMonsterRepeated(mazmorra[i][j] + "," + stoiStr(i)+ "," + stoiStr(j))){
+                //Con vida
+                int vitality = adventure.vitality;
+                string monstersFoundedAux = monstersFounded;
+                monstersFoundedAux += mazmorra[i][j] + "," + stoiStr(i)+ "," + stoiStr(j) + " ";
 
-                //victoria -> menos vida y cambio en mazmorra
-                }else{
-                    vitality = status;
-                    if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoGigante)){
-                        mazmorra[i][j] = residuoMonstruo + mazmorra[i][j] + " " + iAux + " " + jAux; //Residuo de gigante
+                for(int index1 = 0; index1 < monstersFoundedAux.size();){
+                    string monsterComp = cutString(monstersFoundedAux, index1, ' ');
+                    int index2 = 0;
+                    string monster = cutString(monsterComp, index2, ',');
+                    int iMons = stoiInt(cutString(monsterComp, index2, ','));
+                    int jMons = stoiInt(cutString(monsterComp, index2, ','));
+                    vitality = start_combat(adventure.type, vitality, monster, false);
+                    if(vitality <= 0){
+                        monstersFounded = "";
+                        return false;
                     }
                 }
+                monstersFounded += mazmorra[i][j] + "," + stoiStr(i)+ "," + stoiStr(j) + " ";
+                if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoGigante)){
+                    return false;
+                }
             }
-
             //VALORES VALIDOS
             if(isValidValue(mazmorra[i][j])){
                 return true;
@@ -460,7 +502,7 @@ class Mazmorra{
     }
 
     bool isBestSolution(){
-        if(!stillMonsters()){
+        if(monstersFounded.size() == monsters.size()){
             return true;
         }
         return false;
@@ -475,44 +517,75 @@ class Mazmorra{
         }
         else if(output != YOUGETTHEGLORY && iIndex * jIndex < row * col){
             for(int i = 0; i < sizePosibilities; i++){
-                int auxVitality = adventure.vitality;
-                if(isValid(iIndex, jIndex, i, adventure.vitality)){
+                if(isValid(iIndex, jIndex, i)){
                     //procesar
                     place(iIndex, jIndex, i);
 
                     //backup
                     string auxPosition = mazmorra[iIndex][jIndex];
                     mazmorra[iIndex][jIndex] = "s";
+
                     printMazmorra();
-                    
 
                     //backtracking
                     wanderMazmorra(iIndex, jIndex);
 
                     //deshacer
                     mazmorra[iIndex][jIndex] = auxPosition;
-                    adventure.vitality = auxVitality; 
                     displace(iIndex, jIndex, i);
+                    //printMazmorra();
+
+                    
                 }
             }
-            restoreMonsters(iIndex, jIndex);
         }
     }
 };
 
 int main(){
-    int V = 15;
-    string T = "LU";
-    int L = 10;
-    int A = 10;
+    //GET DATOS DEL TXT
+    string line;
 
-    Mazmorra mazmorra(V, T, L, A);
+    //Vitalidad del Aventurero
+    getline(cin, line);
+    int V = getNumber(line);
+
+    //Tipo de Aventurero
+    getline(cin, line);
+    string T = line;
+
+    //Cantidad de Mazmorras 
+    getline(cin, line);
+    int M = stoiInt(line);
     
-    //BACKTRACKING
-    mazmorra.wanderMazmorra(mazmorra.iPE, mazmorra.jPE);
+    for(int i = 0; i < M; i++){
+        //Largo de Mazmorra
+        //Ancho de Mazmorra
+        getline(cin, line);
+        int index = 0;
+        int L = stoiInt(cutString(line, index, ' '));
+        int A = stoiInt(cutString(line, index, ' '));
 
-    //SALIDA
-    mazmorra.printOutput(mazmorra.output);
+        //MAZMORRA
+        Mazmorra mazmorra(V, T, L, A);
+        mazmorra.mazmorra = mazmorra.createMazmorra();
+        for(int i = 0; i < L; i++){
+            getline(cin, line);
+            mazmorra.initMazmorra(line, i);
+        }
 
+        //mazmorra.printMazmorra();
+
+        //BACKTRACKING
+        mazmorra.wanderMazmorra(mazmorra.iPE, mazmorra.jPE);
+
+        //SALIDA
+        mazmorra.printOutput(mazmorra.output);
+
+        //ELIMINAR MAZMORRA
+        mazmorra.deleteMazmorra();
+        
+    }
+    
     return 0;
 }
