@@ -44,7 +44,14 @@ public:
 		if(log){cout << "Attacks : " << damage_to_execute << " -  Vitality: " << vitality << "\n\n";}
 		return damage_to_execute;
 	}
+	void reset_ability(){
+        for(int i = 0; i < ability_num; ++i){
+            (ptr_abs+i)-> used = -99;
+        }
+    }
 };
+
+
 
 ability lu_arr_abs[4] = {ability(12,4,-99),ability(7,3,-99),ability(4,2,-99),ability(2,1,-99)};
 class Lu: public Entity{
@@ -54,6 +61,7 @@ class Lu: public Entity{
 			ability_num = 4;
 			vitality = _vitality;
 			ptr_abs = &lu_arr_abs[0];
+			reset_ability();
 		}
 };
 
@@ -65,6 +73,7 @@ class Ar: public Entity{
 			ability_num = 4;
 			vitality = _vitality;
 			ptr_abs = &ar_arr_abs[0];
+			reset_ability();
 		}
 };
 
@@ -76,6 +85,7 @@ class Sl: public Entity{
 			ability_num = 1;
 			vitality = _vitality;
 			ptr_abs = &sl_arr_abs[0];
+			reset_ability();
 		}
 };
 
@@ -87,6 +97,7 @@ class Or: public Entity{
 			ability_num = 1;
 			vitality = _vitality;
 			ptr_abs = &or_arr_abs[0];
+			reset_ability();
 		}
 };
 ability gi_arr_abs[1] = {ability(5,2,-99)};
@@ -98,6 +109,7 @@ class Gi: public Entity{
 			ability_num = 1;
 			vitality = _vitality;
 			ptr_abs = &gi_arr_abs[0];
+			reset_ability();
 		}
 };
 
