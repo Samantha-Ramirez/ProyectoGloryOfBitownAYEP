@@ -214,10 +214,10 @@ int posibilitiesJ[] = {0, 0, 1, -1};
 int sizePosibilities = sizeof(posibilitiesI)/sizeof(int);
 
 string aux[7][5] = {{"*", "*", "*", "*", "*"},
-                    {"*", "*", "*", "*", "*"},
+                    {"*", ".", ".", ".", "*"},
                     {"*", "O20", ".", ".", "*"},
                     {"PE", ".", ".", ".", "*"},
-                    {"*", ".", "*", "*", "*"},
+                    {"*", ".", ".", "*", "*"},
                     {"*", ".", ".", ".", "."},
                     {"*", "*", "*", "*", "PS"}};
 
@@ -330,8 +330,9 @@ class Mazmorra{
             for(int j = 0; j < col; j++){
                 //RESIDUOS DE GIGANTE
                 if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(residuoMonstruo)){
+                    int sizePosition = mazmorra[i][j].size();
                     mazmorra[i][j] = "";
-                    for(int k = 1; k < mazmorra[i][j].size(); k++){
+                    for(int k = 1; k < sizePosition; k++){
                         mazmorra[i][j] += mazmorra[i][j][k];
                     }
                 //NO SUPERABLE
@@ -368,7 +369,7 @@ class Mazmorra{
             //COMBATE
             if(isMonster(mazmorra[i][j])){
                 //Status despues de combate
-                int status = start_combat(adventure.type, vitality, mazmorra[i][j], false);
+                int status = start_combat(adventure.type, vitality, mazmorra[i][j], true);
 
                 //derrota -> no sigo
                 if(status == 0){
