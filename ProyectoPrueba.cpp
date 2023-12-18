@@ -24,6 +24,32 @@ enum outputsMazmorra{
     YOUDIE = 2,
 };
 
+int stoiInt(string str){
+    int acum = 0;
+    for(int i = 0; i < str.size(); i++){
+        acum *=10;
+        acum += (str[i] - '0');
+    }
+    return acum;
+}
+
+string stoiStr(int intg){
+    string acumsRev = ""; //al reves
+    string acumsDer = ""; //al derecho
+    
+    while(intg % 10 != 0){
+        acumsRev += (intg % 10) + '0';
+        intg = intg / 10;
+    }
+    for(int i = acumsRev.size()-1; i >= 0; i--){
+        acumsDer += acumsRev[i];
+    }
+    if(acumsDer == ""){
+        acumsDer = "0";
+    }
+    return acumsDer;
+}
+
 int extract_num(string t){
 	string n_t = "";
 	for (int i = 1; i < t.size(); ++i){
@@ -36,7 +62,7 @@ char getFirstPosition(string position){
     return position[0];
 }
 
-int cutStringNum(string line, int &index){
+string cutString(string line, int &index){
     string aux = "";
     for(int i = index; i < line.size(); i++){
         if(line[i] == ' ')
@@ -45,7 +71,7 @@ int cutStringNum(string line, int &index){
         index++;
     }
     index++;
-    return stoi(aux);
+    return aux;
 }
 
 class ability{
@@ -215,7 +241,7 @@ int sizePosibilities = sizeof(posibilitiesI)/sizeof(int);
 
 string aux[7][5] = {{"*", "*", "*", "*", "*"},
                     {"*", ".", ".", ".", "*"},
-                    {"*", "O5", ".", ".", "*"},
+                    {"*", "G5", ".", ".", "*"},
                     {"PE", ".", ".", ".", "*"},
                     {"*", ".", ".", "*", "*"},
                     {"*", ".", ".", ".", "."},
@@ -325,22 +351,20 @@ class Mazmorra{
         return isThereMonsters;
     }
 
-    void restoreMonsters(){
+    void restoreMonsters(int iIndex, int jIndex){
         for(int i = 0; i < row; i++) {
             for(int j = 0; j < col; j++){
-                //RESIDUOS DE GIGANTE
-                if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(residuoMonstruo)){
-                    int sizePosition = mazmorra[i][j].size();
-                    mazmorra[i][j] = "";
-                    for(int k = 1; k < sizePosition; k++){
-                        mazmorra[i][j] += mazmorra[i][j][k];
-                    }
-                //NO SUPERABLE
-                }else if((getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoNoSuperable))){
-                    int sizePosition = mazmorra[i][j].size();
-                    mazmorra[i][j] = "";
-                    for(int k = 1; k < sizePosition; k++){
-                        mazmorra[i][j] += mazmorra[i][j][k];
+                //RESIDUOS DE GIGANTE || NO SUPERABLE
+                if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(residuoMonstruo) 
+                || getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoNoSuperable)){
+                    
+                    int index = 1;
+                    string monster = cutString(mazmorra[i][j], index);
+                    int monsI = stoiInt(cutString(mazmorra[i][j], index));
+                    int monsJ = stoiInt(cutString(mazmorra[i][j], index));
+
+                    if(monsI == iIndex && monsJ == jIndex){
+                        mazmorra[i][j] = monster;
                     }
                 }
             }
@@ -360,12 +384,14 @@ class Mazmorra{
     }
 
     bool isValid(int i, int j, int index, int &vitality){
+        string iAux = stoiStr(i);
+        string jAux = stoiStr(j);
         i = i + posibilitiesI[index];
         j = j + posibilitiesJ[index];
         
         //Posicion dentro del tablero
         if(i >= 0 && i < row && j >= 0 && j < col){
-            cout << "Posicion valida " << mazmorra[i][j] << endl;
+            //cout << "Posicion valida " << mazmorra[i][j] << endl;
             //COMBATE
             if(isMonster(mazmorra[i][j])){
                 //Status despues de combate
@@ -373,7 +399,7 @@ class Mazmorra{
 
                 //derrota -> no sigo
                 if(status == 0){
-                    mazmorra[i][j] = monstruoNoSuperable + mazmorra[i][j]; //Marcado como no superable
+                    mazmorra[i][j] = monstruoNoSuperable + mazmorra[i][j] + " " + iAux + " " + jAux; //Marcado como no superable
                     //printMazmorra();
                     return false;
 
@@ -381,7 +407,7 @@ class Mazmorra{
                 }else{
                     vitality = status;
                     if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoGigante)){
-                        mazmorra[i][j] = residuoMonstruo + mazmorra[i][j]; //Residuo de gigante
+                        mazmorra[i][j] = residuoMonstruo + mazmorra[i][j] + " " + iAux + " " + jAux; //Residuo de gigante
                     }
                 }
             }
@@ -436,7 +462,7 @@ class Mazmorra{
                     //backup
                     string auxPosition = mazmorra[iIndex][jIndex];
                     mazmorra[iIndex][jIndex] = casillaInvalida;
-                    cout << "Vida antes" << adventure.vitality << endl;
+                    //cout << "Vida antes" << adventure.vitality << endl;
 
                     //log 
                     printMazmorra();
@@ -446,7 +472,7 @@ class Mazmorra{
 
                     //deshacer
                     adventure.vitality = auxVitality; 
-                    cout << "Vida despues" << adventure.vitality << endl;
+                    //cout << "Vida despues" << adventure.vitality << endl;
                     mazmorra[iIndex][jIndex] = auxPosition;
                     displace(iIndex, jIndex, i);
 
@@ -455,7 +481,7 @@ class Mazmorra{
                     
                 }
             }
-            restoreMonsters();//CAMBIAR DE LUGAR
+            restoreMonsters(iIndex, jIndex);
         }
     }
 };
