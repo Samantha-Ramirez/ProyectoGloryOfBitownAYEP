@@ -277,12 +277,6 @@ class Mazmorra{
         int valuesSize = 6;
         string monsters[] = {monstruoSlime, monstruoOrco, monstruoGigante};
         int monstersSize = 3;
-        //inicio
-        for(int i = 0; i < valuesSize; i++){
-            if(position[0] == getFirstPosition(values[i])){
-                return 2;
-            }
-        }
         //valor exacto
         for(int i = 0; i < valuesSize; i++){
             if(position == values[i]){
@@ -293,6 +287,12 @@ class Mazmorra{
         for(int i = 0; i < monstersSize; i++){
             if(position == monsters[i]){
                 return 0;
+            }
+        }
+        //inicio
+        for(int i = 0; i < valuesSize; i++){
+            if(position[0] == getFirstPosition(values[i])){
+                return 2;
             }
         }
         return -1;
@@ -306,7 +306,7 @@ class Mazmorra{
                 newLine += line[j];
             }
         }
-
+        //cout << newLine << endl;
         int x = 0;
         string aux = "";
         for(int j = 0; j < newLine.size(); j++){

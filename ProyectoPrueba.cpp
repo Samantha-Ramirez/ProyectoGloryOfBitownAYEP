@@ -209,13 +209,13 @@ int start_combat(char hero_type, int hero_vitality ,string monster_string, bool 
 
 //MAZMORRA
 //Movimientos
-int posibilitiesI[] = { -1, 1, 0, 0};
+int posibilitiesI[] = {-1, 1, 0, 0};
 int posibilitiesJ[] = {0, 0, 1, -1};
 int sizePosibilities = sizeof(posibilitiesI)/sizeof(int);
 
 string aux[7][5] = {{"*", "*", "*", "*", "*"},
                     {"*", ".", ".", ".", "*"},
-                    {"*", "O20", ".", ".", "*"},
+                    {"*", "O5", ".", ".", "*"},
                     {"PE", ".", ".", ".", "*"},
                     {"*", ".", ".", "*", "*"},
                     {"*", ".", ".", ".", "."},
