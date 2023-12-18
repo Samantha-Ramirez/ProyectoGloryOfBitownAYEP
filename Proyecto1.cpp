@@ -71,7 +71,7 @@ int extract_num(string t){
 	for (int i = 1; i < t.size(); ++i){
 		n_t+= t[i];
 	}
-	return stoi(n_t);
+	return stoiInt(n_t);
 }
 
 bool isNumber(char pos){
@@ -92,7 +92,7 @@ int getNumber(string line){
             num += line[i];
         }
     }
-    return stoi(num);
+    return stoiInt(num);
 }
 
 class ability{
@@ -568,15 +568,15 @@ int main(){
 
     //Cantidad de Mazmorras 
     getline(cin, line);
-    int M = stoi(line);
+    int M = stoiInt(line);
     
     for(int i = 0; i < M; i++){
         //Largo de Mazmorra
         //Ancho de Mazmorra
         getline(cin, line);
         int index = 0;
-        int L = stoi(cutString(line, index));
-        int A = stoi(cutString(line, index));
+        int L = stoiInt(cutString(line, index));
+        int A = stoiInt(cutString(line, index));
 
         //MAZMORRA
         Mazmorra mazmorra(V, T, L, A);
