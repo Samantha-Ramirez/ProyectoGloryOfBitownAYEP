@@ -248,14 +248,24 @@ int start_combat(char hero_type, int hero_vitality ,string monster_string, bool 
 int posibilitiesI[] = {0, 0, -1, 1};
 int posibilitiesJ[] = {1, -1, 0, 0};
 int sizePosibilities = sizeof(posibilitiesI)/sizeof(int);
+string aux2[10][10] = {{"PE", "*", ".", ".", ".", ".", ".", ".", ".", "*"},
+                    {".", "*", ".", "*", "*", "*", "*", "*", ".", "*"},
+                    {".", "*", ".", "*", "S6", ".", ".", "*", ".", "*"},
+                    {".", "O15", ".", ".", ".", "*", ".", ".", ".", "*"},
+                    {"*", "*", "*", "*", "*", "*", "*", "*", "O20", "*"},
+                    {"*", "*", "*", "*", "*", "*", "*", "*", ".", "*"},
+                    {"*", ".", ".", ".", "O15", ".", "*", "*", ".", "."},
+                    {"*", ".", ".", ".", "S6", ".", ".", ".", ".", "."},
+                    {"*", "*", "*", "*", "*", "*", "*", "*", "*", "."},
+                    {"*", "*", "*", "*", "*", "*", "*", "*", "*", "PS"}};
 string aux[10][10] = {{"PE", "*", ".", ".", ".", ".", ".", ".", ".", "*"},
                     {".", "*", ".", "*", "*", "*", "*", "*", ".", "*"},
                     {".", "*", ".", "*", "S6", ".", ".", "*", ".", "*"},
-                    {".", "O15", ".", ".", ".", "*", ".", "G10", ".", "*"},
-                    {"*", "*", "*", "*", "*", "*", "*", "*", "O20", "*"},
+                    {".", ".", ".", ".", ".", "*", ".", ".", ".", "*"},
                     {"*", "*", "*", "*", "*", "*", "*", "*", ".", "*"},
-                    {"*", ".", ".", ".", "O15", ".", ".", ".", ".", "."},
-                    {"*", ".", ".", ".", "S6", ".", ".", ".", ".", "."},
+                    {"*", "*", "*", "*", "*", "*", "*", "*", ".", "*"},
+                    {"*", ".", ".", ".", ".", "S6", "*", "*", ".", "."},
+                    {"*", ".", ".", ".", ".", ".", ".", ".", ".", "."},
                     {"*", "*", "*", "*", "*", "*", "*", "*", "*", "."},
                     {"*", "*", "*", "*", "*", "*", "*", "*", "*", "PS"}};
 
@@ -267,7 +277,7 @@ class Mazmorra{
     int jPE; //j portal de entrada
     int iPS; //i portal de salida
     int jPS; //j portal de salida
-    string mazmorra[19][10]; //mazmorra
+    string mazmorra[10][10]; //mazmorra
     outputsMazmorra output; //resultado del recorrido
     Entity adventure; //aventurero
     
@@ -467,30 +477,22 @@ class Mazmorra{
             for(int i = 0; i < sizePosibilities; i++){
                 int auxVitality = adventure.vitality;
                 if(isValid(iIndex, jIndex, i, adventure.vitality)){
-
                     //procesar
                     place(iIndex, jIndex, i);
 
                     //backup
                     string auxPosition = mazmorra[iIndex][jIndex];
                     mazmorra[iIndex][jIndex] = "s";
-                    //cout << "Vida antes" << adventure.vitality << endl;
-
-                    //log 
                     printMazmorra();
+                    
 
                     //backtracking
                     wanderMazmorra(iIndex, jIndex);
 
                     //deshacer
-                    adventure.vitality = auxVitality; 
-                    //cout << "Vida despues" << adventure.vitality << endl;
                     mazmorra[iIndex][jIndex] = auxPosition;
+                    adventure.vitality = auxVitality; 
                     displace(iIndex, jIndex, i);
-
-                    //log
-                    printMazmorra();
-                    
                 }
             }
             restoreMonsters(iIndex, jIndex);
