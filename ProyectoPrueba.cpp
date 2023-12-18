@@ -245,17 +245,19 @@ int start_combat(char hero_type, int hero_vitality ,string monster_string, bool 
 
 //MAZMORRA
 //Movimientos
-int posibilitiesI[] = {-1, 1, 0, 0};
-int posibilitiesJ[] = {0, 0, 1, -1};
+int posibilitiesI[] = {0, 0, -1, 1};
+int posibilitiesJ[] = {1, -1, 0, 0};
 int sizePosibilities = sizeof(posibilitiesI)/sizeof(int);
-
-string aux[7][5] = {{"*", "*", "*", "*", "*"},
-                    {"*", ".", ".", ".", "*"},
-                    {"*", "O5", ".", ".", "*"},
-                    {"PE", ".", ".", ".", "*"},
-                    {"*", ".", ".", "O5", "*"},
-                    {"*", ".", ".", ".", "."},
-                    {"*", "*", "*", "*", "PS"}};
+string aux[10][10] = {{"PE", "*", ".", ".", ".", ".", ".", ".", ".", "*"},
+                    {".", "*", ".", "*", "*", "*", "*", "*", ".", "*"},
+                    {".", "*", ".", "*", "S6", ".", ".", "*", ".", "*"},
+                    {".", "O15", ".", ".", ".", "*", ".", "G10", ".", "*"},
+                    {"*", "*", "*", "*", "*", "*", "*", "*", "O20", "*"},
+                    {"*", "*", "*", "*", "*", "*", "*", "*", ".", "*"},
+                    {"*", ".", ".", ".", "O15", ".", ".", ".", ".", "."},
+                    {"*", ".", ".", ".", "S6", ".", ".", ".", ".", "."},
+                    {"*", "*", "*", "*", "*", "*", "*", "*", "*", "."},
+                    {"*", "*", "*", "*", "*", "*", "*", "*", "*", "PS"}};
 
 class Mazmorra{
     public:
@@ -265,7 +267,7 @@ class Mazmorra{
     int jPE; //j portal de entrada
     int iPS; //i portal de salida
     int jPS; //j portal de salida
-    string mazmorra[7][5]; //mazmorra
+    string mazmorra[19][10]; //mazmorra
     outputsMazmorra output; //resultado del recorrido
     Entity adventure; //aventurero
     
@@ -276,10 +278,10 @@ class Mazmorra{
         this -> output = YOUDIE; //por default
         this -> adventure.type = getFirstPosition(T);
         this -> adventure.vitality = V;
-        this -> iPE = 3;
+        this -> iPE = 0;
         this -> jPE = 0;
-        this -> iPS = 6;
-        this -> jPS = 4;
+        this -> iPS = 9;
+        this -> jPS = 9;
         for(int i = 0; i < row; i++){
             for(int j = 0; j < col; j++){
                 mazmorra[i][j] = aux[i][j];
@@ -471,7 +473,7 @@ class Mazmorra{
 
                     //backup
                     string auxPosition = mazmorra[iIndex][jIndex];
-                    mazmorra[iIndex][jIndex] = casillaInvalida;
+                    mazmorra[iIndex][jIndex] = "s";
                     //cout << "Vida antes" << adventure.vitality << endl;
 
                     //log 
@@ -497,10 +499,10 @@ class Mazmorra{
 };
 
 int main(){
-    int V = 10;
-    string T = "AR";
-    int L = 7;
-    int A = 5;
+    int V = 15;
+    string T = "LU";
+    int L = 10;
+    int A = 10;
 
     Mazmorra mazmorra(V, T, L, A);
     

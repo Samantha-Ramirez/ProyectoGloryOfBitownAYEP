@@ -1,0 +1,12 @@
+35
+AR
+1
+8 10
+* * * * * * * * * *
+* G20 AR G20 AR G20 * . . *
+* G20 AR G20 AR G20 * . . *
+PE . . . . . . . . *
+* . . * * * * * * *
+* AR AR AR AR AR AR AR AR AR
+* G20 AR AR AR AR G20 AR AR PS
+* * * * * * * * * *
