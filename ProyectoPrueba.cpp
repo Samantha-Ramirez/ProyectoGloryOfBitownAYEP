@@ -36,11 +36,11 @@ int stoiInt(string str){
 string stoiStr(int intg){
     string acumsRev = ""; //al reves
     string acumsDer = ""; //al derecho
-    
-    while(intg % 10 != 0){
+    do{
         acumsRev += (intg % 10) + '0';
         intg = intg / 10;
-    }
+    }while(intg != 0);
+    
     for(int i = acumsRev.size()-1; i >= 0; i--){
         acumsDer += acumsRev[i];
     }
