@@ -143,6 +143,12 @@ public:
 
 		return damage_to_execute;
 	}
+
+    void reset_ability(){
+        for(int i = 0; i < ability_num; ++i){
+            (ptr_abs+i)-> used = -99;
+        }
+    }
 };
 
 //LUCHADOR
@@ -154,6 +160,7 @@ class Lu: public Entity{
 			ability_num = 4;
 			vitality = _vitality;
 			ptr_abs = &lu_arr_abs[0];
+            reset_ability();
 		}
 };
 
@@ -166,6 +173,7 @@ class Ar: public Entity{
 			ability_num = 4;
 			vitality = _vitality;
 			ptr_abs = &ar_arr_abs[0];
+            reset_ability();
 		}
 };
 
@@ -178,6 +186,7 @@ class Sl: public Entity{
 			ability_num = 1;
 			vitality = _vitality;
 			ptr_abs = &sl_arr_abs[0];
+            reset_ability();
 		}
 };
 
@@ -190,6 +199,7 @@ class Or: public Entity{
 			ability_num = 1;
 			vitality = _vitality;
 			ptr_abs = &or_arr_abs[0];
+            reset_ability();
 		}
 };
 
@@ -203,6 +213,7 @@ class Gi: public Entity{
 			ability_num = 1;
 			vitality = _vitality;
 			ptr_abs = &gi_arr_abs[0];
+            reset_ability();
 		}
 };
 
