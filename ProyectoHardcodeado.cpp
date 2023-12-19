@@ -423,6 +423,16 @@ class Mazmorra{
         return false;
     }
 
+    bool isMonsterRepeated(string monster){
+        for(int index = 0; index < monstersFounded.size();){
+            string monsterComp = cutString(monstersFounded, index, ' ');
+            if(monsterComp == monster){
+                return true;
+            }
+        }
+        return false;
+    }
+
     bool isValidValue(string position){
         if((position == casillaDefault)
         || (position == arbol && adventure.type == getFirstPosition(arquero))
@@ -435,16 +445,6 @@ class Mazmorra{
         return false; 
     }
 
-    bool isMonsterRepeated(string monster){
-        for(int index = 0; index < monstersFounded.size();){
-            string monsterComp = cutString(monstersFounded, index, ' ');
-            if(monsterComp == monster){
-                return true;
-            }
-        }
-        return false;
-    }
-
     bool isValid(int i, int j, int index){
         i = i + posibilitiesI[index];
         j = j + posibilitiesJ[index];
@@ -454,23 +454,34 @@ class Mazmorra{
 
             //ES MONSTRUO
             if(isMonster(mazmorra[i][j]) && !isMonsterRepeated(mazmorra[i][j] + "," + stoiStr(i)+ "," + stoiStr(j))){
-                //Con vida
+                //Todas las peleas
                 int vitality = adventure.vitality;
                 string monstersFoundedAux = monstersFounded;
                 monstersFoundedAux += mazmorra[i][j] + "," + stoiStr(i)+ "," + stoiStr(j) + " ";
 
                 for(int index1 = 0; index1 < monstersFoundedAux.size();){
+                    //extraer monstruo
                     string monsterComp = cutString(monstersFoundedAux, index1, ' ');
                     int index2 = 0;
                     string monster = cutString(monsterComp, index2, ',');
                     int iMons = stoiInt(cutString(monsterComp, index2, ','));
                     int jMons = stoiInt(cutString(monsterComp, index2, ','));
+                    //pelea
                     vitality = start_combat(adventure.type, vitality, monster, false);
                     if(vitality <= 0){
-                        monstersFounded = "";
+                        //monstersFounded = "";
                         return false;
                     }
                 }
+                //Solo la ultima pelea
+                /*
+                vitality = adventure.vitality;
+                vitality = start_combat(adventure.type, vitality, mazmorra[i][j], false);
+                if(vitality <= 0){
+                    monstersFounded = "";
+                    return false;
+                }
+                */
                 monstersFounded += mazmorra[i][j] + "," + stoiStr(i)+ "," + stoiStr(j) + " ";
                 if(getFirstPosition(mazmorra[i][j]) == getFirstPosition(monstruoGigante)){
                     return false;
